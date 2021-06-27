@@ -4,7 +4,8 @@
   "description": "e-commerce app using MERN",
   "main": "server.js",
   "scripts": {
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "start": "node server.js"
   },
   "author": "Touis Abdelbasset",
   "license": "ISC",
@@ -18,5 +19,13 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abdou177/e-commerce-app-using-MERN.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Abdou177/e-commerce-app-using-MERN/issues"
+  },
+  "homepage": "https://github.com/Abdou177/e-commerce-app-using-MERN#readme"
 }

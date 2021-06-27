@@ -9,24 +9,30 @@ const userCtrl = {
             const user = await users.findOne({email})
             if(user)
             return res.status(400).json({msg: 'the eamil already exists .....'})
-            if (password.length<8)
-            return res.status(400).json({msg: 'Password is at least 8 characters long..'})
+            if (password.length<8){
+              return res.status(400).json({msg: 'Password is at least 8 characters long..'});
+            }
+            
 
             // Password Encrption 
             const passwordhash = await bcrypt.hash(password, 10);
-            const newUser = new users({name, email, password: passwordhash})
+            const User = new users({name, email, password: passwordhash})
+           
             // Save new user from mongodb
-            await newUser.save();
-            return res.status(200).json({msg: 'uwser register with succes',newUser})
-        } catch (error) {
+            await User.save();
+            return res.status(200).json({msg: 'user register with succes',User})
+           }
+         catch (error) {
             return res.status(500).json({msg: 'errer server'});
             
         }
     },
-    login: async (res,req)=>{
+    login: async (req,res)=>{
+        const {email, password} = req.body;
         try {
             // checking existing user
             let user = await users.findOne({email});
+            
             if (!user){
                 return res.status(400).json({msg: 'bad Credentials!!!'});
             }
@@ -35,18 +41,31 @@ const userCtrl = {
             if (!isMatch){
                 return res.status(400).json({msg :'Bad Credentials!!!!!'});
             }
-            // sing user
-            const payload ={
-                id: user._id,
-            };
-            // generate token 
-            const token = await jwt.sign(payload,{
-                expiresIn: '7 hours',
-            });
-            res.status(200).json({msg:'logged in with success',user,token});
-        } catch (error) {
-            res.status(500).json({msg:'error server'});
+            // If login success , create access token and refresh token
+            const accesstoken = createAccessToken({id: user._id})
+            const refreshtoken = createRefreshToken({id: user._id})
+
+            res.cookie('refreshtoken', refreshtoken, {
+                httpOnly: true,
+                path: '/user/refresh_token',
+                maxAge: 7*24*60*60*1000 // 7d
+            })
+
+            res.json({accesstoken})
+
+        } catch (err) {
+            return res.status(500).json({msg: "errer server"})
         }
-    }
+    },
+    getUser: async (req, res) =>{
+        try {
+            const user = await Users.findById(req.user.id).select('-password')
+            if(!user) return res.status(400).json({msg: "User does not exist."})
+
+            res.json(user)
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
 }
 module.exports = userCtrl

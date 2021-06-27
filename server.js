@@ -14,6 +14,7 @@ const connectDB = require('./config/connectDB.js');
 connectDB();
 //routes
 app.use('/users', require('./routes/userRouter'));
+
 app.use('/products',require('./routes/productRouter'));
 app.use('/category',require('./routes/categoryRouter'))
 // launch server

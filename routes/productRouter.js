@@ -3,7 +3,7 @@ const productCtrl = require('../controllers/productCtrl');
 
 // connect to data base  app.post('/user/all', function(req, res){ Controller.Create});
 
-router.post('/products',function (req, res){productCtrl.CreateProduct});
+router.post('/CreateProduct',productCtrl.CreateProduct);
 
 
 module.exports = router
